@@ -28,7 +28,7 @@ SubShader {
 
 	void surf (Input IN, inout SurfaceOutput o) {
 
-		o.Emission = _Color * _Brightness * tex2D (_EmissiveMap, IN.uv_EmissiveMap).a;
+		o.Emission = _Color * _Brightness * tex2D (_EmissiveMap, IN.uv_EmissiveMap).r;
 		o.Alpha = tex2D (_EmissiveMap, IN.uv_EmissiveMap).a - _Transparency;
 	}
 	ENDCG
