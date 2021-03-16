@@ -11,37 +11,46 @@ namespace KopernicusExpansion
     {
         class HeightmapUtils
         {
-            private static float SingleSample(Int32 x, Int32 y, MapSO heightMap, bool bits24)
+            public const int MODE_8_BIT_NPS = 0;
+            public const int MODE_16_BIT = 1;
+            public const int MODE_24_BIT = 2;
+
+            private static float SingleSample(Int32 x, Int32 y, MapSO heightMap, int mode)
             {
                 // Get the Color, not the Float-Value from the Map
                 Color32 c = heightMap.GetPixelColor32(x, y);
 
                 // Get the height data from the terrain
                 float height = 0;
-                if (bits24)
+                switch (mode)
                 {
-                    height = (float)((int)c.b | ((int)c.g << 8) | ((int)c.r << 16)) / (float)0x00FFFFFF;
-                }
-                else
-                {
-                    height = (float)((int)c.b | ((int)c.g << 8)) / (float)0xFFFF;
+                    default:
+                    case 0:
+                        height = (float)c.b / (float)0xFF;
+                        break;
+                    case 1:
+                        height = (float)((int)c.b | ((int)c.g << 8)) / (float)0xFFFF;
+                        break;
+                    case 2:
+                        height = (float)((int)c.b | ((int)c.g << 8) | ((int)c.r << 16)) / (float)0x00FFFFFF;
+                        break;
                 }
 
                 return height;
             }
 
-            public static float SampleHeightmap16(Double u, Double v, MapSO heightMap, bool bits24)
+            public static float SampleHeightmap(Double u, Double v, MapSO heightMap, int mode)
             {
                 if (heightMap == null || !heightMap.IsCompiled) return 0;
                 BilinearCoords coords = ConstructBilinearCoords(u, v, heightMap);
                 return Mathf.Lerp(
                     Mathf.Lerp(
-                        SingleSample(coords.xFloor, coords.yFloor, heightMap, bits24),
-                        SingleSample(coords.xCeiling, coords.yFloor, heightMap, bits24),
+                        SingleSample(coords.xFloor, coords.yFloor, heightMap, mode),
+                        SingleSample(coords.xCeiling, coords.yFloor, heightMap, mode),
                         coords.u),
                     Mathf.Lerp(
-                        SingleSample(coords.xFloor, coords.yCeiling, heightMap, bits24),
-                        SingleSample(coords.xCeiling, coords.yCeiling, heightMap, bits24),
+                        SingleSample(coords.xFloor, coords.yCeiling, heightMap, mode),
+                        SingleSample(coords.xCeiling, coords.yCeiling, heightMap, mode),
                         coords.u),
                     coords.v);
             }
