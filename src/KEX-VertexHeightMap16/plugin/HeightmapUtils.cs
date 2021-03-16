@@ -54,9 +54,10 @@ namespace KopernicusExpansion
 
                 // Floor
                 x = x - Math.Truncate(x);
+                if (y >= 1) y = 1 - (y - 1);
+                if (y < 0) y = -y;
                 y = y - Math.Truncate(y);
                 if (x < 0) x = 1.0 + x;
-                if (y < 0) y = -y;
 
                 // X to U
                 coords.x = x * heightMap.Width;
