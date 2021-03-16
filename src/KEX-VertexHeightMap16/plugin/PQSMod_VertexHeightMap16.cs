@@ -19,7 +19,7 @@ namespace KopernicusExpansion
             public override void OnVertexBuildHeight(PQS.VertexBuildData data)
             {
                 // Apply it
-                data.vertHeight += heightMapOffset + heightMapDeformity * VertexHeightMap16.SampleHeightmap16(data.u, data.v, heightMap, false);
+                data.vertHeight += heightMapOffset + heightMapDeformity * HeightmapUtils.SampleHeightmap16(data.u, data.v, heightMap, false);
             }
         }
     }
